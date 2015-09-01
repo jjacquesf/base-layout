@@ -3,7 +3,8 @@ var gulp = require('gulp'),
 	stylus = require('gulp-stylus')
 	watch = require('gulp-watch'),
 	concat = require('gulp-concat'),
-	webserver = require('gulp-webserver');
+	webserver = require('gulp-webserver'),
+	dirSync = require('gulp-dir-sync');
 
 
 
@@ -39,4 +40,8 @@ gulp.task('webserver', function() {
 		}));
 });
 
-gulp.task('default', ['vender-concat', 'compile-styl', 'compile-jd', 'webserver']);
+gulp.task('sync-images', function() {
+	dirSync('client/images', 'public/img')
+});
+
+gulp.task('default', ['sync-images', 'vender-concat', 'compile-styl', 'compile-jd', 'webserver']);
