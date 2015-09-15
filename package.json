@@ -16,7 +16,6 @@
     "gulp-copy": "0.0.2",
     "gulp-dir-sync": "^0.1.2",
     "gulp-jade": "^1.1.0",
-    "gulp-sass": "^2.0.4",
     "gulp-stylus": "^2.0.6",
     "gulp-watch": "^4.3.5",
     "http-server": "^0.8.0",
