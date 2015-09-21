@@ -21,7 +21,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.0.6",
     "gulp-watch": "^4.3.5",
-    "http-server": "^0.8.0",
+    "gulp-webserver": "^0.9.1",
     "jade": "^1.11.0",
     "nib": "^1.1.0",
     "stylus": "^0.51.1"

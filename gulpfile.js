@@ -47,8 +47,8 @@ gulp.task('copy-folder', function() {
 });
 
 gulp.task('watch', function () {
-   gulp.watch('lib/styl/*.styl', ['css']);
-   gulp.watch(['lib/jade/*.jade', 'lib/templates/*.jade'], ['html']);
+   gulp.watch(['lib/styl/*.styl', 'lib/styl/*/*.jade'], ['css']);
+   gulp.watch(['lib/jade/*.jade', 'lib/jade/*/*.jade'], ['html']);
    gulp.watch('lib/js/*.js', ['js']);
    gulp.watch('lib/img/*', ['copy-folder']);
 });
