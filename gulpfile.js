@@ -1,47 +1,56 @@
 var gulp = require('gulp'),
 	jade = require('gulp-jade'),
 	stylus = require('gulp-stylus')
-	watch = require('gulp-watch'),
 	concat = require('gulp-concat'),
 	webserver = require('gulp-webserver'),
-	dirSync = require('gulp-dir-sync');
+	rename = require('gulp-rename'),
+	autoprefixer = require('gulp-autoprefixer'),
+	minifyCSS = require('gulp-minify-css');
 
-
-
-gulp.task('vender-concat', function() {
-	gulp.src('node_modules/bootstrap/dist/css/bootstrap.min.css')
-		.pipe(concat('vendor.css'))
-		.pipe(gulp.dest('public/css/'));
+gulp.task('css', function () {
+    gulp.src('lib/styl/style.styl')
+        .pipe(stylus({compress: true, paths: ['lib/styl']}))
+        .pipe(autoprefixer())
+        .pipe(minifyCSS())
+        .pipe(rename('style.css'))
+        .pipe(gulp.dest('public/css'));
 });
 
-
-gulp.task('compile-styl', function() {
-
-	gulp.src('client/*.styl')
-		.pipe(watch('client/*.styl'))
-		.pipe(stylus())
-		.pipe(gulp.dest('public/css/'));
+gulp.task('html', function() {
+  gulp.src('lib/jade/*.jade')
+    .pipe(jade({ pretty: true }))
+    .pipe(gulp.dest('public'))
 });
-
-gulp.task('compile-jd', function() {
-	gulp.src('client/*.jade')
-		.pipe(watch('client/*.jade'))
-		.pipe(jade())
-		.pipe(gulp.dest('public/'));
-});
-
 
 gulp.task('webserver', function() {
 	gulp.src('./public')
 		.pipe(webserver({
 			livereload: true,
-			directoryListing: false,
-			open: true
+      open: true,
+			directoryListing: false
 		}));
 });
 
-gulp.task('sync-images', function() {
-	dirSync('client/images', 'public/img')
+gulp.task('js', function() {
+  // gulp.src([
+  //   'bower_components/jquery/dist/jquery.js',
+  //   'bower_components/modernizr/modernizr.js'
+  // ])
+  //   .pipe( concat('vendors.js') ) // concat pulls all our files together before minifying them
+  //   .pipe(uglify())
+  //   .pipe(gulp.dest('public/js'))
 });
 
-gulp.task('default', ['sync-images', 'vender-concat', 'compile-styl', 'compile-jd', 'webserver']);
+gulp.task('copy-folder', function() {  
+  gulp.src('lib/img/*')
+    .pipe(gulp.dest('public/img'));
+});
+
+gulp.task('watch', function () {
+   gulp.watch('lib/styl/*.styl', ['css']);
+   gulp.watch(['lib/jade/*.jade', 'lib/templates/*.jade'], ['html']);
+   gulp.watch('lib/js/*.js', ['js']);
+   gulp.watch('lib/img/*', ['copy-folder']);
+});
+
+gulp.task('default', ['css', 'html', 'js', 'copy-folder', 'webserver', 'watch']);
