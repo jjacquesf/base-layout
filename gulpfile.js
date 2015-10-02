@@ -5,7 +5,9 @@ var gulp = require('gulp'),
 	webserver = require('gulp-webserver'),
 	rename = require('gulp-rename'),
 	autoprefixer = require('gulp-autoprefixer'),
-	minifyCSS = require('gulp-minify-css');
+	minifyCSS = require('gulp-minify-css'),
+  dirSync = require('gulp-directory-sync'),
+  uglify = require('gulp-uglify');
 
 gulp.task('css', function () {
     gulp.src('lib/styl/style.styl')
@@ -22,35 +24,35 @@ gulp.task('html', function() {
     .pipe(gulp.dest('public'))
 });
 
+gulp.task('img', function() {  
+  gulp.src( '' )
+    .pipe(dirSync('lib/img', 'public/img'));
+});
+
+gulp.task('js', function(){
+    return gulp.src(['lib/js/*'])
+        .pipe(concat('concat.js'))
+        .pipe(gulp.dest('public/js'))
+        .pipe(rename('main.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('public/js'));
+});
+
 gulp.task('webserver', function() {
-	gulp.src('./public')
-		.pipe(webserver({
-			livereload: true,
+  gulp.src('./public')
+    .pipe(webserver({
+      livereload: true,
       open: true,
-			directoryListing: false
-		}));
-});
-
-gulp.task('js', function() {
-  // gulp.src([
-  //   'bower_components/jquery/dist/jquery.js',
-  //   'bower_components/modernizr/modernizr.js'
-  // ])
-  //   .pipe( concat('vendors.js') ) // concat pulls all our files together before minifying them
-  //   .pipe(uglify())
-  //   .pipe(gulp.dest('public/js'))
-});
-
-gulp.task('copy-folder', function() {  
-  gulp.src('lib/img/*')
-    .pipe(gulp.dest('public/img'));
+      directoryListing: false
+    }));
 });
 
 gulp.task('watch', function () {
-   gulp.watch(['lib/styl/*.styl', 'lib/styl/*/*.jade'], ['css']);
+   gulp.watch(['lib/styl/*.styl', 'lib/styl/*/*.css'], ['css']);
    gulp.watch(['lib/jade/*.jade', 'lib/jade/*/*.jade'], ['html']);
-   gulp.watch('lib/js/*.js', ['js']);
-   gulp.watch('lib/img/*', ['copy-folder']);
+   gulp.watch(['lib/img/*'], ['img']);
+   gulp.watch(['lib/js/*.js'], ['js']);
+   
 });
 
-gulp.task('default', ['css', 'html', 'js', 'copy-folder', 'webserver', 'watch']);
+gulp.task('default', ['css', 'html', 'img', 'js','webserver', 'watch']);
